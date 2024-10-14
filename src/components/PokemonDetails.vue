@@ -8,8 +8,12 @@
         src="../assets/arrow_back.svg"
         alt="arrow-back"
       />
-      <h1 class="details-title">Pokemon Name</h1>
-      <h2 class="details-number">#999</h2>
+      <h1 class="details-title">{{ name }}</h1>
+      <h2 v-if="id < 10" class="details-number">#00{{ id }}</h2>
+      <h2 v-else-if="id < 100 && id >= 10" class="details-number">
+        #0{{ id }}
+      </h2>
+      <h2 v-else class="details-number">#{{ id }}</h2>
     </div>
     <div class="details-pokemon-img">
       <img
@@ -17,7 +21,7 @@
         src="../assets/chevron_left.svg"
         alt="chevron-left"
       />
-      <img class="silhouette" src="../assets/silhouette.png" alt="" />
+      <img class="silhouette" :src="image" alt="" />
       <img
         class="details-icon-chevronright"
         src="../assets/chevron_right.svg"
@@ -26,32 +30,38 @@
     </div>
     <div class="details-card">
       <div class="details-type-container">
-        <div class="details-type">Type</div>
-        <div class="details-type">Type</div>
+        <div
+          :key="pokemonType"
+          v-for="pokemonType in pokemonTypes"
+          class="details-type"
+        >
+          {{ pokemonType.type.name }}
+        </div>
       </div>
-      <h2 class="details-subtitle">About</h2>
+      <h2 class="details-subtitle">À Propos</h2>
       <div class="details-attribute">
         <div class="details-frame">
           <div class="details-subframe">
             <img src="../assets/weight.svg" alt="" />
-            <p>0,1 kg</p>
+            <p>{{ weight / 10 }} kg</p>
           </div>
-          <div class="details-info-label">Weight</div>
+          <div class="details-info-label">Poids</div>
         </div>
         <div class="hr"></div>
         <div class="details-frame">
           <div class="details-subframe">
             <img src="../assets/straighten.svg" alt="" />
-            <p>1,3 m</p>
+            <p>{{ height / 10 }} m</p>
           </div>
-          <div class="details-info-label">Height</div>
+          <div class="details-info-label">Taille</div>
         </div>
         <div class="hr"></div>
         <div class="details-frame">
-          <div class="details-subframe">
-            <p>Levitate</p>
-          </div>
-          <div class="details-info-label">Moves</div>
+          <p :key="pokemonAbility" v-for="pokemonAbility in pokemonAbilities">
+            {{ pokemonAbility.ability.name }}
+          </p>
+
+          <div class="details-info-label">Abilities</div>
         </div>
       </div>
       <div class="description">
@@ -70,42 +80,17 @@
         </div>
         <div class="hr"></div>
         <div class="details-data-container">
-          <div class="details-data">999</div>
-          <div class="details-data">999</div>
-          <div class="details-data">999</div>
-          <div class="details-data">999</div>
-          <div class="details-data">999</div>
-          <div class="details-data">999</div>
+          <div :key="stat" v-for="stat in pokemonStats" class="details-data">
+            {{ stat.base_stat }}
+          </div>
         </div>
         <div class="details-chart-container">
-          <div id="chart-1" class="details-chart">
+          <div :key="stat" v-for="stat in pokemonStats" class="details-chart">
             <div class="details-chart-value">
-              <div class="details-chart-value-number"></div>
-            </div>
-          </div>
-          <div id="chart-2" class="details-chart">
-            <div class="details-chart-value">
-              <div class="details-chart-value-number"></div>
-            </div>
-          </div>
-          <div id="chart-3" class="details-chart">
-            <div class="details-chart-value">
-              <div class="details-chart-value-number"></div>
-            </div>
-          </div>
-          <div id="chart-4" class="details-chart">
-            <div class="details-chart-value">
-              <div class="details-chart-value-number"></div>
-            </div>
-          </div>
-          <div id="chart-5" class="details-chart">
-            <div class="details-chart-value">
-              <div class="details-chart-value-number"></div>
-            </div>
-          </div>
-          <div id="chart-6" class="details-chart">
-            <div class="details-chart-value">
-              <div class="details-chart-value-number"></div>
+              <div
+                :style="{ width: stat.base_stat / 2 + '%' }"
+                class="details-chart-value-number"
+              ></div>
             </div>
           </div>
         </div>
@@ -117,7 +102,45 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 
-export default defineComponent({});
+export default defineComponent({
+  data() {
+    return {
+      name: "",
+      id: 0,
+      image: "",
+      pokemonTypes: [],
+      height: 0,
+      weight: 0,
+      pokemonAbilities: [],
+      pokemonStats: [],
+    };
+  },
+  methods: {
+    getPokemon() {
+      fetch("https://pokeapi.co/api/v2/pokemon/1")
+        .then((response) => {
+          response.json().then((pokemon) => {
+            console.log(pokemon.stats);
+            this.name = pokemon.name;
+            this.id = pokemon.id;
+            this.image =
+              pokemon.sprites.other["official-artwork"].front_default;
+            this.pokemonTypes = pokemon.types;
+            this.height = pokemon.height;
+            this.weight = pokemon.weight;
+            this.pokemonAbilities = pokemon.abilities;
+            this.pokemonStats = pokemon.stats;
+          });
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    },
+  },
+  mounted() {
+    this.getPokemon();
+  },
+});
 </script>
 
 <style>
@@ -172,6 +195,7 @@ export default defineComponent({});
   font-size: 1.5rem;
   font-style: normal;
   font-weight: 700;
+  text-transform: capitalize;
   line-height: 2rem; /* 133.333% */
   flex: 1 0 0;
 }
@@ -241,7 +265,6 @@ export default defineComponent({});
 }
 
 .details-type {
-  width: 1.63rem;
   height: 1rem;
   display: flex;
   padding: 0.125rem 0.5rem;
@@ -256,6 +279,7 @@ export default defineComponent({});
   font-style: normal;
   font-weight: 700;
   line-height: 1rem; /* 160% */
+  text-transform: capitalize;
 }
 
 .details-subtitle {
@@ -283,6 +307,7 @@ export default defineComponent({});
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: flex-end;
   gap: 0.25rem;
   flex: 1 0 0;
 }
@@ -297,7 +322,7 @@ export default defineComponent({});
   align-self: stretch;
 }
 
-.details-subframe p {
+.details-frame p {
   color: var(--Grayscale-Dark, #1d1d1d);
   text-align: justify;
 
@@ -306,7 +331,8 @@ export default defineComponent({});
   font-size: 0.625rem;
   font-style: normal;
   font-weight: 400;
-  line-height: 1rem; /* 160% */
+  line-height: 0.8rem; /* 160% */
+  text-transform: capitalize;
 }
 
 .details-info-label {
@@ -425,10 +451,10 @@ export default defineComponent({});
 }
 
 .details-chart-value-number {
-  width: 9.56rem;
+  width: 60%;
   height: 0.25rem;
 
-  background: var(--Grayscale-Wireframe, #b8b8b8);
+  background: var(--Grayscale-Wireframe, #8b8b8b);
   border-radius: 0.25rem;
 }
 
