@@ -8,12 +8,15 @@
         src="../assets/arrow_back.svg"
         alt="arrow-back"
       />
-      <h1 class="details-title">{{ name }}</h1>
-      <h2 v-if="id < 10" class="details-number">#00{{ id }}</h2>
-      <h2 v-else-if="id < 100 && id >= 10" class="details-number">
-        #0{{ id }}
+      <h1 class="details-title">{{ pokemon.name }}</h1>
+      <h2 v-if="pokemon.id < 10" class="details-number">#00{{ pokemon.id }}</h2>
+      <h2
+        v-else-if="pokemon.id < 100 && pokemon.id >= 10"
+        class="details-number"
+      >
+        #0{{ pokemon.id }}
       </h2>
-      <h2 v-else class="details-number">#{{ id }}</h2>
+      <h2 v-else class="details-number">#{{ pokemon.id }}</h2>
     </div>
     <div class="details-pokemon-img">
       <img
@@ -21,7 +24,7 @@
         src="../assets/chevron_left.svg"
         alt="chevron-left"
       />
-      <img class="silhouette" :src="image" alt="" />
+      <img class="silhouette" :src="pokemon.image" alt="" />
       <img
         class="details-icon-chevronright"
         src="../assets/chevron_right.svg"
@@ -32,7 +35,7 @@
       <div class="details-type-container">
         <div
           :key="pokemonType"
-          v-for="pokemonType in pokemonTypes"
+          v-for="pokemonType in pokemon.pokemonTypes"
           class="details-type"
         >
           {{ pokemonType.type.name }}
@@ -43,7 +46,7 @@
         <div class="details-frame">
           <div class="details-subframe">
             <img src="../assets/weight.svg" alt="" />
-            <p>{{ weight / 10 }} kg</p>
+            <p>{{ pokemon.weight / 10 }} kg</p>
           </div>
           <div class="details-info-label">Poids</div>
         </div>
@@ -51,13 +54,16 @@
         <div class="details-frame">
           <div class="details-subframe">
             <img src="../assets/straighten.svg" alt="" />
-            <p>{{ height / 10 }} m</p>
+            <p>{{ pokemon.height / 10 }} m</p>
           </div>
           <div class="details-info-label">Taille</div>
         </div>
         <div class="hr"></div>
         <div class="details-frame">
-          <p :key="pokemonAbility" v-for="pokemonAbility in pokemonAbilities">
+          <p
+            :key="pokemonAbility"
+            v-for="pokemonAbility in pokemon.pokemonAbilities"
+          >
             {{ pokemonAbility.ability.name }}
           </p>
 
@@ -80,12 +86,20 @@
         </div>
         <div class="hr"></div>
         <div class="details-data-container">
-          <div :key="stat" v-for="stat in pokemonStats" class="details-data">
+          <div
+            :key="stat"
+            v-for="stat in pokemon.pokemonStats"
+            class="details-data"
+          >
             {{ stat.base_stat }}
           </div>
         </div>
         <div class="details-chart-container">
-          <div :key="stat" v-for="stat in pokemonStats" class="details-chart">
+          <div
+            :key="stat"
+            v-for="stat in pokemon.pokemonStats"
+            class="details-chart"
+          >
             <div class="details-chart-value">
               <div
                 :style="{ width: stat.base_stat / 2 + '%' }"
@@ -102,34 +116,66 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 
+interface PokemonType {
+  name: string;
+}
+
+interface PokemonAbility {
+  name: string;
+}
+
+interface PokemonStat {
+  name: string;
+  base_stat: number;
+}
+
+interface Pokemon {
+  name: string;
+  id: number;
+  image: string;
+  pokemonTypes: PokemonType[];
+  height: number;
+  weight: number;
+  pokemonAbilities: PokemonAbility[];
+  pokemonStats: PokemonStat[];
+}
+
+interface Data {
+  choiceId: number;
+  pokemon: Pokemon;
+}
+
 export default defineComponent({
-  data() {
+  data(): Data {
     return {
-      name: "",
-      id: 0,
-      image: "",
-      pokemonTypes: [],
-      height: 0,
-      weight: 0,
-      pokemonAbilities: [],
-      pokemonStats: [],
+      choiceId: 1,
+      pokemon: {
+        name: "",
+        id: 0,
+        image: "",
+        pokemonTypes: [],
+        height: 0,
+        weight: 0,
+        pokemonAbilities: [],
+        pokemonStats: [],
+      },
     };
   },
   methods: {
     getPokemon() {
-      fetch("https://pokeapi.co/api/v2/pokemon/1")
+      fetch(`https://pokeapi.co/api/v2/pokemon/${this.choiceId}`)
         .then((response) => {
           response.json().then((pokemon) => {
-            console.log(pokemon.stats);
-            this.name = pokemon.name;
-            this.id = pokemon.id;
-            this.image =
+            console.log(pokemon.types);
+            this.pokemon.name = pokemon.name;
+            this.pokemon.id = pokemon.id;
+            this.pokemon.image =
               pokemon.sprites.other["official-artwork"].front_default;
-            this.pokemonTypes = pokemon.types;
-            this.height = pokemon.height;
-            this.weight = pokemon.weight;
-            this.pokemonAbilities = pokemon.abilities;
-            this.pokemonStats = pokemon.stats;
+            this.pokemon.pokemonTypes = pokemon.types;
+            this.pokemon.height = pokemon.height;
+            this.pokemon.weight = pokemon.weight;
+            this.pokemon.pokemonAbilities = pokemon.abilities;
+            this.pokemon.pokemonStats = pokemon.stats;
           });
         })
         .catch((err) => {
