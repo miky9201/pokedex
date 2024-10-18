@@ -34,7 +34,7 @@
     <div class="details-card">
       <div class="details-type-container">
         <div
-          :key="pokemonType"
+          :key="pokemonType.type.name"
           v-for="pokemonType in pokemon.pokemonTypes"
           class="details-type"
         >
@@ -61,7 +61,7 @@
         <div class="hr"></div>
         <div class="details-frame">
           <p
-            :key="pokemonAbility"
+            :key="pokemonAbility.ability.name"
             v-for="pokemonAbility in pokemon.pokemonAbilities"
           >
             {{ pokemonAbility.ability.name }}
@@ -87,7 +87,7 @@
         <div class="hr"></div>
         <div class="details-data-container">
           <div
-            :key="stat"
+            :key="stat.base_stat"
             v-for="stat in pokemon.pokemonStats"
             class="details-data"
           >
@@ -96,7 +96,7 @@
         </div>
         <div class="details-chart-container">
           <div
-            :key="stat"
+            :key="stat.base_stat"
             v-for="stat in pokemon.pokemonStats"
             class="details-chart"
           >
@@ -117,11 +117,15 @@
 import { defineComponent } from "vue";
 
 interface PokemonType {
-  name: string;
+  type: {
+    name: string;
+  };
 }
 
 interface PokemonAbility {
-  name: string;
+  ability: {
+    name: string;
+  };
 }
 
 interface PokemonStat {
