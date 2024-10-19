@@ -16,6 +16,7 @@ export default defineComponent({
 
 <style>
 #app {
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;

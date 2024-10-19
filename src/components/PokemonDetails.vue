@@ -1,5 +1,5 @@
 <template>
-  <div class="details-container">
+  <div :class="`${pokemon.color} details-container`">
     <img class="pokeball" src="../assets/pokeball.svg" alt="" />
 
     <div class="details-header">
@@ -36,19 +36,19 @@
         <div
           :key="pokemonType.type.name"
           v-for="pokemonType in pokemon.pokemonTypes"
-          class="details-type"
+          :class="`${pokemonType.type.name} details-type`"
         >
           {{ pokemonType.type.name }}
         </div>
       </div>
-      <h2 class="details-subtitle">À Propos</h2>
+      <h2 :class="`${pokemon.color}-text details-subtitle`">About</h2>
       <div class="details-attribute">
         <div class="details-frame">
           <div class="details-subframe">
             <img src="../assets/weight.svg" alt="" />
             <p>{{ pokemon.weight / 10 }} kg</p>
           </div>
-          <div class="details-info-label">Poids</div>
+          <div class="details-info-label">Weight</div>
         </div>
         <div class="hr"></div>
         <div class="details-frame">
@@ -56,7 +56,7 @@
             <img src="../assets/straighten.svg" alt="" />
             <p>{{ pokemon.height / 10 }} m</p>
           </div>
-          <div class="details-info-label">Taille</div>
+          <div class="details-info-label">Height</div>
         </div>
         <div class="hr"></div>
         <div class="details-frame">
@@ -71,18 +71,17 @@
         </div>
       </div>
       <div class="description">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc iaculis
-        eros vitae tellus condimentum maximus sit amet in eros.
+        {{ pokemon.description }}
       </div>
-      <h2 class="details-subtitle">Base Stats</h2>
+      <h2 :class="`${pokemon.color}-text details-subtitle`">Base Stats</h2>
       <div class="details-base-stats">
         <div class="details-label-container">
-          <div class="details-label">HP</div>
-          <div class="details-label">ATK</div>
-          <div class="details-label">DEF</div>
-          <div class="details-label">SATK</div>
-          <div class="details-label">SDEF</div>
-          <div class="details-label">SPD</div>
+          <div :class="`${pokemon.color}-text details-label`">HP</div>
+          <div :class="`${pokemon.color}-text details-label`">ATK</div>
+          <div :class="`${pokemon.color}-text details-label`">DEF</div>
+          <div :class="`${pokemon.color}-text details-label`">SATK</div>
+          <div :class="`${pokemon.color}-text details-label`">SDEF</div>
+          <div :class="`${pokemon.color}-text details-label`">SPD</div>
         </div>
         <div class="hr"></div>
         <div class="details-data-container">
@@ -103,7 +102,7 @@
             <div class="details-chart-value">
               <div
                 :style="{ width: stat.base_stat / 2 + '%' }"
-                class="details-chart-value-number"
+                :class="`${pokemon.color} details-chart-value-number`"
               ></div>
             </div>
           </div>
@@ -142,6 +141,8 @@ interface Pokemon {
   weight: number;
   pokemonAbilities: PokemonAbility[];
   pokemonStats: PokemonStat[];
+  color: string;
+  description: string;
 }
 
 interface Data {
@@ -152,7 +153,7 @@ interface Data {
 export default defineComponent({
   data(): Data {
     return {
-      choiceId: 1,
+      choiceId: 37,
       pokemon: {
         name: "",
         id: 0,
@@ -162,15 +163,17 @@ export default defineComponent({
         weight: 0,
         pokemonAbilities: [],
         pokemonStats: [],
+        color: "",
+        description: "",
       },
     };
   },
   methods: {
-    getPokemon() {
+    getPokemonInfo() {
       fetch(`https://pokeapi.co/api/v2/pokemon/${this.choiceId}`)
         .then((response) => {
           response.json().then((pokemon) => {
-            console.log(pokemon.types);
+            // console.log(pokemon.types[0].type.name);
             this.pokemon.name = pokemon.name;
             this.pokemon.id = pokemon.id;
             this.pokemon.image =
@@ -180,6 +183,20 @@ export default defineComponent({
             this.pokemon.weight = pokemon.weight;
             this.pokemon.pokemonAbilities = pokemon.abilities;
             this.pokemon.pokemonStats = pokemon.stats;
+            this.pokemon.color = pokemon.types[0].type.name;
+          });
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    },
+    getPokemonColor() {
+      fetch(`https://pokeapi.co/api/v2/pokemon-species/${this.choiceId}`)
+        .then((response) => {
+          response.json().then((result) => {
+            // console.log(result);
+            this.pokemon.description =
+              result.flavor_text_entries[0].flavor_text;
           });
         })
         .catch((err) => {
@@ -188,7 +205,8 @@ export default defineComponent({
     },
   },
   mounted() {
-    this.getPokemon();
+    this.getPokemonInfo();
+    this.getPokemonColor();
   },
 });
 </script>
@@ -211,7 +229,8 @@ export default defineComponent({
   height: 40rem;
   padding: 0.25rem;
   flex-direction: column;
-  align-items: flex-start;
+  justify-content: center;
+  align-items: center;
   flex-shrink: 0;
   background: var(--Grayscale-Wireframe, #b8b8b8);
 }
@@ -508,6 +527,150 @@ export default defineComponent({
   border-radius: 0.25rem;
 }
 
+.bug {
+  background-color: #a7b723;
+}
+
+.dark {
+  background-color: #75574c;
+}
+
+.dragon {
+  background-color: #7037ff;
+}
+
+.electric {
+  background-color: #f9cf30;
+}
+
+.fairy {
+  background-color: #e69eac;
+}
+
+.fighting {
+  background-color: #c12239;
+}
+
+.fire {
+  background-color: #f57d31;
+}
+
+.flying {
+  background-color: #a891ec;
+}
+
+.ghost {
+  background-color: #70559b;
+}
+
+.normal {
+  background-color: #aaa67f;
+}
+
+.grass {
+  background-color: #74cb48;
+}
+
+.ground {
+  background-color: #dec16b;
+}
+
+.ice {
+  background-color: #9ad6df;
+}
+
+.poison {
+  background-color: #a43e9e;
+}
+
+.psychic {
+  background-color: #fb5584;
+}
+
+.rock {
+  background-color: #b69e31;
+}
+
+.steel {
+  background-color: #b7b9d0;
+}
+
+.water {
+  background-color: #6493eb;
+}
+
+.bug-text {
+  color: #a7b723;
+}
+
+.dark-text {
+  color: #75574c;
+}
+
+.dragon-text {
+  color: #7037ff;
+}
+
+.electric-text {
+  color: #f9cf30;
+}
+
+.fairy-text {
+  color: #e69eac;
+}
+
+.fighting-text {
+  color: #c12239;
+}
+
+.fire-text {
+  color: #f57d31;
+}
+
+.flying-text {
+  color: #a891ec;
+}
+
+.ghost-text {
+  color: #70559b;
+}
+
+.normal-text {
+  color: #aaa67f;
+}
+
+.grass-text {
+  color: #74cb48;
+}
+
+.ground-text {
+  color: #dec16b;
+}
+
+.ice-text {
+  color: #9ad6df;
+}
+
+.poison-text {
+  color: #a43e9e;
+}
+
+.psychic-text {
+  color: #fb5584;
+}
+
+.rock-text {
+  color: #b69e31;
+}
+
+.steel-text {
+  color: #b7b9d0;
+}
+
+.water-text {
+  color: #6493eb;
+}
+
 /* http://meyerweb.com/eric/tools/css/reset/ 
    v2.0 | 20110126
    License: none (public domain)  
@@ -600,6 +763,10 @@ video {
   font-size: 100%;
   font: inherit;
   vertical-align: baseline;
+}
+
+body {
+  height: 100vh;
 }
 /* HTML5 display-role reset for older browsers */
 article,
