@@ -1,15 +1,18 @@
 <template>
-  <PokemonDetails />
+  <Home />
+  <!-- <PokemonDetails /> -->
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import PokemonDetails from "./components/PokemonDetails.vue";
+// import PokemonDetails from "./components/PokemonDetails.vue";
+import Home from "./components/Home.vue";
 // import axios, { AxiosResponse } from "axios";
 
 export default defineComponent({
   components: {
-    PokemonDetails,
+    // PokemonDetails,
+    Home,
   },
 });
 </script>
