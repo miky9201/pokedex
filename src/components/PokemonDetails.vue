@@ -153,7 +153,7 @@ interface Data {
 export default defineComponent({
   data(): Data {
     return {
-      choiceId: 37,
+      choiceId: 2,
       pokemon: {
         name: "",
         id: 0,
@@ -173,7 +173,7 @@ export default defineComponent({
       fetch(`https://pokeapi.co/api/v2/pokemon/${this.choiceId}`)
         .then((response) => {
           response.json().then((pokemon) => {
-            // console.log(pokemon.types[0].type.name);
+            console.log(pokemon);
             this.pokemon.name = pokemon.name;
             this.pokemon.id = pokemon.id;
             this.pokemon.image =
@@ -212,9 +212,6 @@ export default defineComponent({
 </script>
 
 <style>
-/* Poppins Font */
-@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
-
 .hr {
   border: none;
   border-left: 1px solid #e0e0e0;
@@ -232,7 +229,7 @@ export default defineComponent({
   justify-content: center;
   align-items: center;
   flex-shrink: 0;
-  background: var(--Grayscale-Wireframe, #b8b8b8);
+  background: var(--Identity-Primary, #858585);
 }
 
 .pokeball {
