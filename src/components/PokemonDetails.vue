@@ -153,7 +153,7 @@ interface Data {
 export default defineComponent({
   data(): Data {
     return {
-      choiceId: 2,
+      choiceId: 127,
       pokemon: {
         name: "",
         id: 0,

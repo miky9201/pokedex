@@ -11,9 +11,8 @@
           <input
             class="pokedex-list-header-filters-text"
             placeholder="Search"
-            type="text"
-            name=""
-            id=""
+            type="search"
+            v-model="searchContent"
           />
         </div>
         <div class="pokedex-list-header-filters-sort">
@@ -21,14 +20,56 @@
         </div>
       </div>
     </div>
-    <div class="pokedex-list"></div>
+    <div class="pokedex-list">
+      <p :key="pokemon.name" v-for="pokemon in pokedexList">
+        {{ pokemon.name }}
+      </p>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
 
-export default defineComponent({});
+interface PokedexList {
+  name: string;
+}
+
+interface Data {
+  searchContent: string;
+  pokedexList: PokedexList[];
+}
+
+export default defineComponent({
+  data(): Data {
+    return {
+      searchContent: "",
+      pokedexList: [],
+    };
+  },
+  watch: {
+    searchContent(newSearchContent) {
+      console.log(newSearchContent);
+    },
+  },
+  methods: {
+    getPokedexList() {
+      fetch(`https://pokeapi.co/api/v2/pokemon/?limit=150&offset=0`)
+        .then((response) => {
+          response.json().then((list) => {
+            console.log(list.results);
+            this.pokedexList = list.results;
+          });
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    },
+  },
+  mounted() {
+    this.getPokedexList();
+  },
+});
 </script>
 
 <style>
@@ -127,6 +168,7 @@ export default defineComponent({});
   align-self: stretch;
   border-radius: 0.5rem;
   background: var(--Grayscale-White, #fff);
+  overflow: hidden;
 
   /* Inner Shadow/2 dp */
   box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.25) inset;

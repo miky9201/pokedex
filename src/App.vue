@@ -1,17 +1,16 @@
 <template>
   <PokedexList />
-  <!-- <PokemonDetails /> -->
+  <PokemonDetails />
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
-// import PokemonDetails from "./components/PokemonDetails.vue";
+import PokemonDetails from "./components/PokemonDetails.vue";
 import PokedexList from "./components/PokedexList.vue";
-// import axios, { AxiosResponse } from "axios";
 
 export default defineComponent({
   components: {
-    // PokemonDetails,
+    PokemonDetails,
     PokedexList,
   },
 });
