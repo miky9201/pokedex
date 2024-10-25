@@ -1,9 +1,13 @@
 <template>
   <div class="list-item">
     <div class="list-item-number">
-      <p>054</p>
+      <p>#054</p>
     </div>
-    {{ pokemonName }}
+    <img class="list-item-img" src="../assets/silhouette.png" alt="" />
+
+    <div class="list-item-name">
+      <p>{{ pokemonName }}</p>
+    </div>
   </div>
 </template>
 
@@ -49,5 +53,33 @@ export default defineComponent({
   font-style: normal;
   font-weight: 400;
   line-height: 0.75rem; /* 150% */
+}
+
+.list-item-img {
+  z-index: 1;
+  width: 4.5rem;
+  height: 4.5rem;
+  margin-bottom: -1.5rem;
+}
+
+.list-item-name {
+  display: flex;
+  padding: 1.5rem 0.5rem 0.25rem 0.5rem;
+  align-items: flex-start;
+  align-self: stretch;
+  border-radius: 0.4375rem;
+  background: var(--Grayscale-Background, #efefef);
+}
+
+.list-item-name p {
+  text-transform: capitalize;
+  flex: 1 0 0;
+  color: var(--Grayscale-Dark, #1d1d1d);
+  text-align: center;
+  font-family: Poppins;
+  font-size: 0.625rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1rem;
 }
 </style>

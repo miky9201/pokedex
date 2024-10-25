@@ -173,7 +173,7 @@ export default defineComponent({
       fetch(`https://pokeapi.co/api/v2/pokemon/${this.choiceId}`)
         .then((response) => {
           response.json().then((pokemon) => {
-            console.log(pokemon);
+            // console.log(pokemon);
             this.pokemon.name = pokemon.name;
             this.pokemon.id = pokemon.id;
             this.pokemon.image =
@@ -206,7 +206,7 @@ export default defineComponent({
   },
   mounted() {
     this.getPokemonInfo();
-    this.getPokemonColor();
+    // this.getPokemonColor();
   },
 });
 </script>

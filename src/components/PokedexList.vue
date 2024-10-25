@@ -21,8 +21,12 @@
       </div>
     </div>
     <div class="pokedex-list">
-      <p :key="pokemon.name" v-for="pokemon in resultQuery">
-        <PokemonCard :pokemonName="pokemon.name" />
+      <p :key="pokemon.name" v-for="pokemon in pokedexList">
+        <PokemonCard
+          :pokemonId="pokemon.id"
+          :pokemonName="pokemon.name"
+          :pokemonImg="pokemon.img"
+        />
       </p>
     </div>
   </div>
@@ -33,7 +37,9 @@ import { defineComponent } from "vue";
 import PokemonCard from "./PokemonCard.vue";
 
 interface PokedexList {
+  id: string;
   name: string;
+  img: string;
 }
 
 interface Data {
@@ -48,7 +54,13 @@ export default defineComponent({
   data(): Data {
     return {
       searchContent: "",
-      pokedexList: [],
+      pokedexList: [
+        {
+          id: "1",
+          name: "",
+          img: "",
+        },
+      ],
     };
   },
   computed: {
@@ -67,10 +79,9 @@ export default defineComponent({
   },
   methods: {
     getPokedexList() {
-      fetch(`https://pokeapi.co/api/v2/pokemon/?limit=150&offset=0`)
+      fetch(`https://pokeapi.co/api/v2/pokemon/?limit=151&offset=0`)
         .then((response) => {
           response.json().then((list) => {
-            console.log(list.results);
             this.pokedexList = list.results;
           });
         })
@@ -79,7 +90,7 @@ export default defineComponent({
         });
     },
   },
-  mounted() {
+  created() {
     this.getPokedexList();
   },
 });
