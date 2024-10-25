@@ -21,8 +21,8 @@
       </div>
     </div>
     <div class="pokedex-list">
-      <p :key="pokemon.name" v-for="pokemon in pokedexList">
-        {{ pokemon.name }}
+      <p :key="pokemon.name" v-for="pokemon in resultQuery">
+        <PokemonCard :pokemonName="pokemon.name" />
       </p>
     </div>
   </div>
@@ -30,6 +30,7 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import PokemonCard from "./PokemonCard.vue";
 
 interface PokedexList {
   name: string;
@@ -41,15 +42,27 @@ interface Data {
 }
 
 export default defineComponent({
+  components: {
+    PokemonCard,
+  },
   data(): Data {
     return {
       searchContent: "",
       pokedexList: [],
     };
   },
-  watch: {
-    searchContent(newSearchContent) {
-      console.log(newSearchContent);
+  computed: {
+    resultQuery(): PokedexList[] {
+      if (this.searchContent) {
+        return this.pokedexList.filter((pokemon) => {
+          return this.searchContent
+            .toLowerCase()
+            .split(" ")
+            .every((v) => pokemon.name.toLowerCase().includes(v));
+        });
+      } else {
+        return this.pokedexList;
+      }
     },
   },
   methods: {
@@ -159,18 +172,23 @@ export default defineComponent({
 }
 
 .pokedex-list {
-  display: flex;
-  padding: 1.5rem 0.75rem 0rem 0.75rem;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.5rem;
-  flex: 1 0 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 10px;
+  /* grid-auto-rows: minmax(100px, auto); */
+  padding: 1.5rem 0.75rem 1.5rem 0.75rem;
+
+  /* gap: 0.5rem; */
   align-self: stretch;
   border-radius: 0.5rem;
   background: var(--Grayscale-White, #fff);
-  overflow: hidden;
 
   /* Inner Shadow/2 dp */
   box-shadow: 0px 1px 3px 1px rgba(0, 0, 0, 0.25) inset;
+  overflow: overlay;
+}
+
+.pokedex-list::-webkit-scrollbar {
+  display: none;
 }
 </style>
