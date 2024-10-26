@@ -204,7 +204,7 @@ export default defineComponent({
   },
   mounted() {
     this.getPokemonInfo();
-    // this.getPokemonColor();
+    this.getPokemonColor();
   },
 });
 </script>

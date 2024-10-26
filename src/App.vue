@@ -1,6 +1,6 @@
 <template>
-  <PokedexList />
-  <PokemonDetails />
+  <PokedexList v-if="!isCardClicked" @card-clicked="handleCardClick" />
+  <PokemonDetails v-if="isCardClicked" />
 </template>
 
 <script lang="ts">
@@ -12,6 +12,16 @@ export default defineComponent({
   components: {
     PokemonDetails,
     PokedexList,
+  },
+  data() {
+    return {
+      isCardClicked: false,
+    };
+  },
+  methods: {
+    handleCardClick() {
+      this.isCardClicked = true;
+    },
   },
 });
 </script>

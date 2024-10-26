@@ -26,6 +26,7 @@
           :pokemonId="pokemon.id"
           :pokemonName="pokemon.name"
           :pokemonImg="pokemon.img"
+          @card-clicked="$emit('card-clicked')"
         />
       </p>
     </div>
@@ -48,6 +49,9 @@ interface Data {
 }
 
 export default defineComponent({
+  props: {
+    isCardClicked: Boolean,
+  },
   components: {
     PokemonCard,
   },
