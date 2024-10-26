@@ -21,7 +21,7 @@
       </div>
     </div>
     <div class="pokedex-list">
-      <p :key="pokemon.name" v-for="pokemon in pokedexList">
+      <p :key="pokemon.name" v-for="pokemon in resultQuery">
         <PokemonCard
           :pokemonId="pokemon.id"
           :pokemonName="pokemon.name"
@@ -37,7 +37,7 @@ import { defineComponent } from "vue";
 import PokemonCard from "./PokemonCard.vue";
 
 interface PokedexList {
-  id: string;
+  id: number;
   name: string;
   img: string;
 }
@@ -54,13 +54,7 @@ export default defineComponent({
   data(): Data {
     return {
       searchContent: "",
-      pokedexList: [
-        {
-          id: "1",
-          name: "",
-          img: "",
-        },
-      ],
+      pokedexList: [],
     };
   },
   computed: {
@@ -80,17 +74,29 @@ export default defineComponent({
   methods: {
     getPokedexList() {
       fetch(`https://pokeapi.co/api/v2/pokemon/?limit=151&offset=0`)
-        .then((response) => {
-          response.json().then((list) => {
-            this.pokedexList = list.results;
-          });
+        .then((response) => response.json())
+        .then((list) => {
+          const fetchPromises = list.results.map((result: { url: string }) =>
+            fetch(result.url)
+              .then((res) => res.json())
+              .then((el) => ({
+                id: el.id,
+                name: el.name,
+                img: el.sprites.other["official-artwork"].front_default,
+              }))
+          );
+
+          return Promise.all(fetchPromises);
+        })
+        .then((pokemonArray) => {
+          this.pokedexList = pokemonArray; // Maintenant dans le bon ordre
         })
         .catch((err) => {
           console.error(err);
         });
     },
   },
-  created() {
+  mounted() {
     this.getPokedexList();
   },
 });

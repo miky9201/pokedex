@@ -1,9 +1,13 @@
 <template>
   <div class="list-item">
     <div class="list-item-number">
-      <p>#054</p>
+      <p v-if="pokemonId < 10" class="details-number">#00{{ pokemonId }}</p>
+      <p v-else-if="pokemonId < 100 && pokemonId >= 10" class="details-number">
+        #0{{ pokemonId }}
+      </p>
+      <p v-else class="details-number">#{{ pokemonId }}</p>
     </div>
-    <img class="list-item-img" src="../assets/silhouette.png" alt="" />
+    <img class="list-item-img" :src="pokemonImg" alt="" />
 
     <div class="list-item-name">
       <p>{{ pokemonName }}</p>
@@ -16,7 +20,12 @@ import { defineComponent } from "vue";
 
 export default defineComponent({
   props: {
+    pokemonId: {
+      type: Number,
+      default: 0,
+    },
     pokemonName: String,
+    pokemonImg: String,
   },
 });
 </script>
