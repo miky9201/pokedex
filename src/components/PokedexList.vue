@@ -27,6 +27,7 @@
           :pokemonName="pokemon.name"
           :pokemonImg="pokemon.img"
           @card-clicked="$emit('card-clicked')"
+          @selected-card-id="$emit('selected-card-id')"
         />
       </p>
     </div>

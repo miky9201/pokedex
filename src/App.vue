@@ -1,6 +1,14 @@
 <template>
-  <PokedexList v-if="!isCardClicked" @card-clicked="handleCardClick" />
-  <PokemonDetails v-if="isCardClicked" />
+  <PokedexList
+    v-if="!isDetailDisplayed"
+    @card-clicked="handleCardClick"
+    @selected-card-id="handleCardId"
+  />
+  <PokemonDetails
+    v-if="isDetailDisplayed"
+    @arrow-clicked="handleArrowClick"
+    :cardSelected="cardSelected"
+  />
 </template>
 
 <script lang="ts">
@@ -15,12 +23,19 @@ export default defineComponent({
   },
   data() {
     return {
-      isCardClicked: false,
+      isDetailDisplayed: false,
+      cardSelected: 0,
     };
   },
   methods: {
     handleCardClick() {
-      this.isCardClicked = true;
+      this.isDetailDisplayed = true;
+    },
+    handleArrowClick() {
+      this.isDetailDisplayed = false;
+    },
+    handleCardId(id: number) {
+      this.cardSelected = id;
     },
   },
 });

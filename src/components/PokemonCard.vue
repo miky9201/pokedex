@@ -1,5 +1,5 @@
 <template>
-  <div class="list-item" @click="handleClick">
+  <div class="list-item" @click="handleClick(pokemonId)">
     <div class="list-item-number">
       <p v-if="pokemonId < 10" class="details-number">#00{{ pokemonId }}</p>
       <p v-else-if="pokemonId < 100 && pokemonId >= 10" class="details-number">
@@ -28,8 +28,9 @@ export default defineComponent({
     pokemonImg: String,
   },
   methods: {
-    handleClick() {
+    handleClick(id: number) {
       this.$emit("card-clicked");
+      this.$emit("selected-card-id", id);
     },
   },
 });

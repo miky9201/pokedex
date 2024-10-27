@@ -4,6 +4,7 @@
 
     <div class="details-header">
       <img
+        @click="handleClick"
         class="details-icon-arrowback"
         src="../assets/arrow_back.svg"
         alt="arrow-back"
@@ -151,9 +152,12 @@ interface Data {
 }
 
 export default defineComponent({
+  props: {
+    cardSelected: Number,
+  },
   data(): Data {
     return {
-      choiceId: 127,
+      choiceId: 0,
       pokemon: {
         name: "",
         id: 0,
@@ -169,8 +173,11 @@ export default defineComponent({
     };
   },
   methods: {
+    handleClick() {
+      this.$emit("arrow-clicked");
+    },
     getPokemonInfo() {
-      fetch(`https://pokeapi.co/api/v2/pokemon/${this.choiceId}`)
+      fetch(`https://pokeapi.co/api/v2/pokemon/${this.cardSelected}`)
         .then((response) => {
           response.json().then((pokemon) => {
             this.pokemon.name = pokemon.name;
