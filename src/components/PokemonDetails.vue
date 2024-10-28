@@ -4,10 +4,10 @@
 
     <div class="details-header">
       <img
-        @click="handleClick"
         class="details-icon-arrowback"
         src="../assets/arrow_back.svg"
         alt="arrow-back"
+        @click="$emit('handle-click-back')"
       />
       <h1 class="details-title">{{ pokemon.name }}</h1>
       <h2 v-if="pokemon.id < 10" class="details-number">#00{{ pokemon.id }}</h2>
@@ -24,12 +24,14 @@
         class="details-icon-chevronleft"
         src="../assets/chevron_left.svg"
         alt="chevron-left"
+        @click="$emit('handle-previous-pokemon')"
       />
       <img class="silhouette" :src="pokemon.image" alt="" />
       <img
         class="details-icon-chevronright"
         src="../assets/chevron_right.svg"
         alt="chevron-right"
+        @click="$emit('handle-next-pokemon')"
       />
     </div>
     <div class="details-card">
@@ -147,17 +149,15 @@ interface Pokemon {
 }
 
 interface Data {
-  choiceId: number;
   pokemon: Pokemon;
 }
 
 export default defineComponent({
   props: {
-    cardSelected: Number,
+    id: Number,
   },
   data(): Data {
     return {
-      choiceId: 0,
       pokemon: {
         name: "",
         id: 0,
@@ -172,12 +172,15 @@ export default defineComponent({
       },
     };
   },
-  methods: {
-    handleClick() {
-      this.$emit("arrow-clicked");
+  watch: {
+    id() {
+      this.getPokemonInfo();
+      this.getPokemonColor();
     },
+  },
+  methods: {
     getPokemonInfo() {
-      fetch(`https://pokeapi.co/api/v2/pokemon/${this.cardSelected}`)
+      fetch(`https://pokeapi.co/api/v2/pokemon/${this.$props.id}`)
         .then((response) => {
           response.json().then((pokemon) => {
             this.pokemon.name = pokemon.name;
@@ -197,7 +200,7 @@ export default defineComponent({
         });
     },
     getPokemonColor() {
-      fetch(`https://pokeapi.co/api/v2/pokemon-species/${this.choiceId}`)
+      fetch(`https://pokeapi.co/api/v2/pokemon-species/${this.$props.id}`)
         .then((response) => {
           response.json().then((result) => {
             this.pokemon.description =
@@ -296,6 +299,7 @@ export default defineComponent({
 
 .details-icon-chevronleft,
 .details-icon-chevronright {
+  z-index: 1;
   width: 1.5rem;
   height: 1.5rem;
 }

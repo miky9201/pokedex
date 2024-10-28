@@ -1,13 +1,11 @@
 <template>
-  <PokedexList
-    v-if="!isDetailDisplayed"
-    @card-clicked="handleCardClick"
-    @selected-card-id="handleCardId"
-  />
+  <PokedexList v-if="!isDetailDisplayed" @get-pokemon-id="getPokemonId" />
   <PokemonDetails
     v-if="isDetailDisplayed"
-    @arrow-clicked="handleArrowClick"
-    :cardSelected="cardSelected"
+    :id="cardSelected"
+    @handle-click-back="handleClickBack"
+    @handle-previous-pokemon="handlePreviousPokemon"
+    @handle-next-pokemon="handleNextPokemon"
   />
 </template>
 
@@ -28,14 +26,18 @@ export default defineComponent({
     };
   },
   methods: {
-    handleCardClick() {
+    getPokemonId(id: number) {
+      this.cardSelected = id;
       this.isDetailDisplayed = true;
     },
-    handleArrowClick() {
+    handleClickBack() {
       this.isDetailDisplayed = false;
     },
-    handleCardId(id: number) {
-      this.cardSelected = id;
+    handlePreviousPokemon() {
+      this.cardSelected--;
+    },
+    handleNextPokemon() {
+      this.cardSelected++;
     },
   },
 });
